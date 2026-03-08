@@ -5,6 +5,7 @@ import com.io.codetracker.application.user.port.out.UserAppRepository;
 import com.io.codetracker.domain.classroom.repository.ClassroomUserDomainPort;
 import com.io.codetracker.domain.user.entity.User;
 import com.io.codetracker.infrastructure.user.persistence.entity.UserEntity;
+import com.io.codetracker.infrastructure.user.persistence.repository.JpaUserRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
@@ -30,6 +31,11 @@ public class UserAppRepositoryImpl implements UserAppRepository,ClassroomUserDom
         if(userEntityOpt.isEmpty()) return Optional.empty();
         UserEntity user = userEntityOpt.get();
         return Optional.of(UserMapper.toDomain(user));
+    }
+
+    @Override
+    public int updateProfileUrlByUserId(String userId, String newProfileUrl) {
+        return jpa.updateProfileUrlByUserId(userId,newProfileUrl);
     }
 
     @Override
