@@ -72,11 +72,6 @@ public final class Classroom {
         refreshUpdatedAt();
     }
 
-    public void archive() {
-        this.status = ClassroomStatus.ARCHIVED;
-        refreshUpdatedAt();
-    }
-
     public void updateName(String name) {
         this.name = name;
         refreshUpdatedAt();
@@ -85,5 +80,9 @@ public final class Classroom {
     public void updateDescription(String description) {
         this.description = description;
         refreshUpdatedAt();
+    }
+
+    public boolean isClosed() {
+        return this.status == ClassroomStatus.CLOSED;
     }
 }
