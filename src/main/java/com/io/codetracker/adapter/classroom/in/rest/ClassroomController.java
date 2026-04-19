@@ -11,11 +11,13 @@ import com.io.codetracker.adapter.classroom.in.mapper.CloseClassroomHttpMapper;
 import com.io.codetracker.adapter.classroom.in.mapper.CreateClassroomHttpMapper;
 import com.io.codetracker.adapter.classroom.in.mapper.DeleteClassroomHttpMapper;
 import com.io.codetracker.adapter.classroom.in.mapper.EditClassroomHttpMapper;
+import com.io.codetracker.adapter.classroom.in.mapper.LeaveClassroomHttpMapper;
 import com.io.codetracker.adapter.classroom.in.mapper.SimpleClassroomHttpMapper;
 import com.io.codetracker.application.classroom.command.DeleteClassroomCommand;
 import com.io.codetracker.application.classroom.command.EditClassroomCommand;
 import com.io.codetracker.adapter.classroom.in.mapper.GetClassroomRecentActivitiesHttpMapper;
 import com.io.codetracker.application.classroom.command.JoinClassroomCommand;
+import com.io.codetracker.application.classroom.command.LeaveClassroomCommand;
 import com.io.codetracker.application.classroom.command.CloseClassroomCommand;
 import com.io.codetracker.application.classroom.error.ClassroomJoinError;
 import com.io.codetracker.application.classroom.command.GetClassroomRecentActivitiesCommand;
@@ -56,6 +58,7 @@ public class ClassroomController {
     private final GetClassroomStatsUseCase getClassroomStatsUseCase;
     private final GetClassroomRecentActivitiesUseCase getClassroomRecentActivitiesUseCase;
     private final EditClassroomUseCase editClassroomUseCase;
+    private final LeaveClassroomUseCase leaveClassroomUseCase;
     private final CloseClassroomUseCase closeClassroomUseCase;
     private final DeleteClassroomUseCase deleteClassroomUseCase;
     
@@ -108,6 +111,20 @@ public ResponseEntity<CreateClassroomResponse> createClassroom(@AuthenticationPr
             @AuthenticationPrincipal AuthPrincipal authPrincipal) {
         List<GetJoinClassroomDataResult> result = getJoinClassroomUseCase.execute(authPrincipal.getUserId());
         return ResponseEntity.ok(result);
+    }
+
+    @PutMapping("/{classroomId}/leave")
+    public ResponseEntity<Map<String, Object>> leaveClassroom(
+            @AuthenticationPrincipal AuthPrincipal authPrincipal,
+            @PathVariable String classroomId) {
+        LeaveClassroomResult result = leaveClassroomUseCase.execute(
+                new LeaveClassroomCommand(classroomId, authPrincipal.getUserId())
+        );
+        if (result != LeaveClassroomResult.SUCCESS) {
+            return ResponseEntity.status(LeaveClassroomHttpMapper.toStatus(result))
+                    .body(Map.of("error", LeaveClassroomHttpMapper.toMessage(result)));
+        }
+        return ResponseEntity.ok(Map.of("message", LeaveClassroomHttpMapper.toMessage(result)));
     }
 
     @GetMapping("/{classroomId}/stats")

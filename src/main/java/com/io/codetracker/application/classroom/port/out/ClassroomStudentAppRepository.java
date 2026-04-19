@@ -5,6 +5,7 @@ import com.io.codetracker.domain.classroom.valueObject.StudentStatus;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 public interface ClassroomStudentAppRepository {
     boolean save(ClassroomStudent classroomStudent);
@@ -13,4 +14,5 @@ public interface ClassroomStudentAppRepository {
     Map<String, Integer> countByClassroomIds(List<String> classroomIds);
     List<ClassroomStudent> findClassroomStudents(String classroomId, StudentStatus status, boolean ascending);
     long countByClassroomId(String classroomId);
+    Optional<ClassroomStudent> findByClassroomIdAndStudentUserId(String classroomId, String studentUserId);
 }
