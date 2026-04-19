@@ -7,7 +7,6 @@ import com.io.codetracker.domain.activity.result.EditActivityResult;
 import com.io.codetracker.domain.activity.valueObject.ActivityStatus;
 
 import java.time.Instant;
-import java.time.LocalDateTime;
 
 public final class UpdateActivityService {
 
