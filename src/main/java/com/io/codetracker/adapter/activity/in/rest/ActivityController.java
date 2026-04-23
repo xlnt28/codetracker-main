@@ -66,7 +66,7 @@ public class ActivityController {
                     .body(GetActivityResponse.fail(GetActivityHttpMapper.ownerToMessage(response.error())));
     }
 
-    @GetMapping("/student/{studentId}")
+    @GetMapping("/student")
     public ResponseEntity<GetStudentViewDataResponse> getClassroomStudentActivities(
             @PathVariable String classroomId,
             @AuthenticationPrincipal AuthPrincipal principal
