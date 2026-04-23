@@ -66,7 +66,7 @@ public class ActivityController {
                     .body(GetActivityResponse.fail(GetActivityHttpMapper.ownerToMessage(response.error())));
     }
 
-    @GetMapping("/student/{classroomId}")
+    @GetMapping("/student/{studentId}")
     public ResponseEntity<GetStudentViewDataResponse> getClassroomStudentActivities(
             @PathVariable String classroomId,
             @AuthenticationPrincipal AuthPrincipal principal
@@ -84,6 +84,7 @@ public class ActivityController {
                           GetActivityHttpMapper.studentToMessage(result.error())
                   ));
     }
+
     @GetMapping("/submitted")
     public ResponseEntity<GetStudentActivityInfoResponse> getSubmittedActivities(@PathVariable String classroomId, @AuthenticationPrincipal AuthPrincipal principal) {
         Result<Map<String, StudentActivityInfoUserData>, GetClassroomOwnerActivityError> response =
