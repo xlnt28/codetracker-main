@@ -3,10 +3,7 @@ package com.io.codetracker.adapter.activity.in.rest;
 import com.io.codetracker.adapter.activity.in.dto.request.SubmitExistingRepositoryRequest;
 import com.io.codetracker.adapter.activity.in.dto.request.MarkStudentAsGradedRequest;
 import com.io.codetracker.adapter.activity.in.dto.request.SubmitNewRepositoryRequest;
-import com.io.codetracker.adapter.activity.in.dto.response.FindUnsubmittedRepositoryResponse;
-import com.io.codetracker.adapter.activity.in.dto.response.GetActivityResponse;
-import com.io.codetracker.adapter.activity.in.dto.response.GetStudentActivityInfoResponse;
-import com.io.codetracker.adapter.activity.in.dto.response.StudentActivityResponse;
+import com.io.codetracker.adapter.activity.in.dto.response.*;
 import com.io.codetracker.adapter.activity.in.mapper.*;
 import com.io.codetracker.adapter.auth.out.security.AuthPrincipal;
 import com.io.codetracker.application.activity.command.AddActivityCommand;
@@ -15,13 +12,13 @@ import com.io.codetracker.application.activity.command.FindUnsubmittedRepository
 import com.io.codetracker.application.activity.command.GetActivityCommand;
 import com.io.codetracker.adapter.activity.in.dto.request.AddActivityRequest;
 import com.io.codetracker.adapter.activity.in.dto.request.EditActivityRequest;
-import com.io.codetracker.adapter.activity.in.dto.response.ActivityResponse;
 import com.io.codetracker.application.activity.error.*;
 import com.io.codetracker.application.activity.port.in.*;
 import com.io.codetracker.application.activity.result.ActivityData;
 
 import com.io.codetracker.application.activity.result.StudentActivityData;
 import com.io.codetracker.application.activity.result.StudentActivityInfoUserData;
+import com.io.codetracker.application.activity.result.StudentActivityViewData;
 import com.io.codetracker.common.result.Result;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -69,14 +66,24 @@ public class ActivityController {
                     .body(GetActivityResponse.fail(GetActivityHttpMapper.ownerToMessage(response.error())));
     }
 
-    @GetMapping("/student")
-    public ResponseEntity<GetActivityResponse> getClassroomStudentActivities(@PathVariable String classroomId, @AuthenticationPrincipal AuthPrincipal principal) {
-        Result<List<ActivityData>, GetClassroomStudentActivityError> response =  getClassroomStudentActivityUseCase.getStudentClassroomActivity(new GetActivityCommand(classroomId,principal.getUserId()));
-        return response.success() ? ResponseEntity.ok(GetActivityResponse.success(response.data()))
-                : ResponseEntity.status(GetActivityHttpMapper.studentToStatus(response.error()))
-                  .body(GetActivityResponse.fail(GetActivityHttpMapper.studentToMessage(response.error())));
-    }
+    @GetMapping("/student/{classroomId}")
+    public ResponseEntity<GetStudentViewDataResponse> getClassroomStudentActivities(
+            @PathVariable String classroomId,
+            @AuthenticationPrincipal AuthPrincipal principal
+    ) {
 
+        Result<List<StudentActivityViewData>, GetClassroomStudentActivityError> result =
+                getClassroomStudentActivityUseCase.getStudentClassroomActivity(
+                        new GetActivityCommand(classroomId, principal.getUserId())
+                );
+
+        return result.success()
+                ? ResponseEntity.ok(GetStudentViewDataResponse.success(result.data()))
+                : ResponseEntity.status(GetActivityHttpMapper.studentToStatus(result.error()))
+                  .body(GetStudentViewDataResponse.fail(
+                          GetActivityHttpMapper.studentToMessage(result.error())
+                  ));
+    }
     @GetMapping("/submitted")
     public ResponseEntity<GetStudentActivityInfoResponse> getSubmittedActivities(@PathVariable String classroomId, @AuthenticationPrincipal AuthPrincipal principal) {
         Result<Map<String, StudentActivityInfoUserData>, GetClassroomOwnerActivityError> response =

@@ -10,10 +10,7 @@ import com.io.codetracker.application.activity.command.GetActivityCommand;
 import com.io.codetracker.application.activity.port.out.ActivityAppRepository;
 import com.io.codetracker.application.activity.port.out.ActivityClassroomStudentAppPort;
 import com.io.codetracker.application.activity.port.out.StudentActivityInfoAppRepository;
-import com.io.codetracker.application.activity.result.ActivityData;
-import com.io.codetracker.application.activity.result.StudentActivityInfoData;
-import com.io.codetracker.application.activity.result.StudentActivityInfoStudentData;
-import com.io.codetracker.application.activity.result.StudentActivityInfoUserData;
+import com.io.codetracker.application.activity.result.*;
 import com.io.codetracker.common.result.Result;
 import com.io.codetracker.domain.activity.valueObject.ActivityStatus;
 import lombok.AllArgsConstructor;
@@ -50,7 +47,7 @@ public class GetActivityService implements GetClassroomOwnerActivityUseCase, Get
     }
 
     @Override
-    public Result<List<ActivityData>, GetClassroomStudentActivityError> getStudentClassroomActivity(GetActivityCommand command) {
+    public Result<List<StudentActivityViewData>, GetClassroomStudentActivityError> getStudentClassroomActivity(GetActivityCommand command) {
         if (!activityClassroomAppPort.existsByClassroomId(command.classroomId())) {
             return Result.fail(GetClassroomStudentActivityError.CLASSROOM_NOT_FOUND);
         }
@@ -60,8 +57,7 @@ public class GetActivityService implements GetClassroomOwnerActivityUseCase, Get
         }
 
         String classroomOwnerUserId = activityClassroomAppPort.findClassroomOwnerByClassroomId(command.classroomId());
-        List<ActivityData> activities = activityAppRepository.findActivitiesByClassroomIdAndInstructorUserId(command.classroomId(), classroomOwnerUserId)
-                .stream().filter(e -> e.getStatus() == ActivityStatus.PUBLISHED || e.getStatus() == ActivityStatus.CLOSED).map(ActivityData::from).toList();
+        List<StudentActivityViewData> activities = activityAppRepository.find(command.classroomId(), classroomOwnerUserId);
 
         return Result.ok(activities);
     }
