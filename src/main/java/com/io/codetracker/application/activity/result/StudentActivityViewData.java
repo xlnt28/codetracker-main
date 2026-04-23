@@ -1,6 +1,7 @@
 package com.io.codetracker.application.activity.result;
 
 import com.io.codetracker.domain.activity.valueObject.SubmissionStatus;
+import com.io.codetracker.domain.activity.valueObject.ActivityStatus;
 import com.io.codetracker.domain.github.valueobject.GithubSubmissionMode;
 
 import java.time.Instant;
@@ -19,7 +20,8 @@ public record StudentActivityViewData(
         Instant submittedAt,
         SubmissionStatus submissionStatus,
         Integer score,
-        String feedback
+        String feedback,
+        String activityStatus
 ) {
 
     public StudentActivityViewData(
@@ -35,7 +37,8 @@ public record StudentActivityViewData(
             Instant submittedAt,
             SubmissionStatus submissionStatus,
             Integer score,
-            String feedback
+            String feedback,
+            String activityStatus
     ) {
         this(
                 activityId,
@@ -50,7 +53,42 @@ public record StudentActivityViewData(
                 submittedAt,
                 submissionStatus,
                 score,
-                feedback
+                feedback,
+                activityStatus
+        );
+    }
+
+    public StudentActivityViewData(
+            String activityId,
+            String title,
+            String description,
+            Integer maxScore,
+            Instant dueDate,
+            UUID studentActivityId,
+            String repositoryName,
+            String repositoryUrl,
+            GithubSubmissionMode repositoryMode,
+            Instant submittedAt,
+            SubmissionStatus submissionStatus,
+            Integer score,
+            String feedback,
+            ActivityStatus activityStatus
+    ) {
+        this(
+                activityId,
+                title,
+                description,
+                maxScore,
+                dueDate,
+                studentActivityId,
+                repositoryName,
+                repositoryUrl,
+                repositoryMode,
+                submittedAt,
+                submissionStatus,
+                score,
+                feedback,
+                activityStatus != null ? activityStatus.name() : null
         );
     }
 }
