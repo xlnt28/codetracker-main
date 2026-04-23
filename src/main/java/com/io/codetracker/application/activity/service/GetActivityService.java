@@ -56,8 +56,8 @@ public class GetActivityService implements GetClassroomOwnerActivityUseCase, Get
             return Result.fail(GetClassroomStudentActivityError.USER_NOT_CLASSROOM_STUDENT);
         }
 
-        String classroomOwnerUserId = activityClassroomAppPort.findClassroomOwnerByClassroomId(command.classroomId());
-        List<StudentActivityViewData> activities = activityAppRepository.findStudentActivities(command.classroomId(), classroomOwnerUserId);
+        List<StudentActivityViewData> activities =
+                activityAppRepository.findStudentActivities(command.classroomId(), command.userId());
 
         return Result.ok(activities);
     }
